@@ -1,3 +1,2 @@
 ﻿  main.cpp
-C:\Users\박현민\Desktop\bangtal\4주차_박현민_20202905\4주차_박현민_20202905\main.cpp(54,2): warning C4091: 'typedef ': 변수를 선언하지 않으면 '_Node' 왼쪽은 무시됩니다.
   4주차_박현민_20202905.vcxproj -> C:\Users\박현민\Desktop\bangtal\4주차_박현민_20202905\4주차_박현민_20202905\Debug\4주차_박현민_20202905.exe
