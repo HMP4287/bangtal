@@ -1,23 +1,17 @@
 #include "Puzzle.h"
 
 Puzzle::Puzzle() {
-
     scene = Scene::create("Ω√¿€»ƒ", "Images/blankBackgroundLast.png");
-
     char imgPath[20];
     for (int i = 0; i < 9; i++) {
         sprintf(imgPath, "Images/%d.png", i + 1);
         board[i] = Object::create(imgPath, scene, indexToX(i), indexToY(i));
         answerBoard[i] = board[i];
     }
-    
     startBtn = Object::create("Images/startButton.png", scene, 450, 100); 
-    
     animationTime = 0.01f;
     mixCount = 200;
-
     timer = Timer::create(animationTime);
-
 }
 
 ScenePtr Puzzle::getScene() {
@@ -68,7 +62,6 @@ void Puzzle::startShuffle() {
     mixCount = 200;
     timer->set(animationTime);
     timer->start();
-
     hidedIndex = rand() % 9;
     board[hidedIndex]->hide();
 }

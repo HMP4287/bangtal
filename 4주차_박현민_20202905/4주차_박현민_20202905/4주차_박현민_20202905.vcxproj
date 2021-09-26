@@ -139,8 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main_v1.cpp" />
-    <ClCompile Include="main_v2.cpp" />
+    <ClCompile Include="미완성_과제.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="puzzle.cpp" />
   </ItemGroup>
   <ItemGroup>

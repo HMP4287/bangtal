@@ -7,12 +7,12 @@ using namespace bangtal;
 int main() {
 
     // 게임 초기 설정 
-	srand((unsigned int)time(NULL));
-	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
-	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
-	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
+    srand((unsigned int)time(NULL));
+    setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
+    setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
+    setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
 
-	Puzzle gamePuzzle;  // 퍼즐 클래스로 "게임퍼즐"(게임 캐릭터로 맞추는 퍼즐) 객체 생성.  (puzzle.h, puzzle.cpp 파일 참고)
+    Puzzle gamePuzzle;  // 퍼즐 클래스로 "게임퍼즐"(게임 캐릭터로 맞추는 퍼즐) 객체 생성.  (puzzle.h, puzzle.cpp 파일 참고)
 
     // 각각의 퍼즐 관련 코드
     for (int i = 0; i < 9; i++) {

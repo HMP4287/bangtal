@@ -1,16 +1,15 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include <bangtal>  // 필요한가 ??
+#include <bangtal>  
 #include <cstdlib>
 #include <ctime>
 #include <Windows.h>
-using namespace bangtal;  // using namesapce 선언 위치 ?
+using namespace bangtal;
 
 class Puzzle 
 {
 private:
-	// 필요 변수.
 	ScenePtr scene;
 	ObjectPtr board[9];
 	ObjectPtr answerBoard[9]; 
@@ -22,8 +21,7 @@ private:
 	int mixCount;
 
 public:
-	// 필요 함수. 생성자. (소멸자는 생략)
-	Puzzle();
+	Puzzle();  // 멤버변수 초기화 
 
 	ScenePtr getScene();
 	ObjectPtr getBoard(int index);
