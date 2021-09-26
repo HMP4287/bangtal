@@ -139,7 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main_v1.cpp" />
+    <ClCompile Include="main_v2.cpp" />
+    <ClCompile Include="puzzle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\1.png" />
@@ -157,6 +159,9 @@
     <Image Include="Images\endButton.png" />
     <Image Include="Images\inner.png" />
     <Image Include="Images\startButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="puzzle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
