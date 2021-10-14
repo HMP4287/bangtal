@@ -157,6 +157,7 @@
     <Image Include="Images\stage1.png" />
     <Image Include="Images\stage2.png" />
     <Image Include="Images\stage3.png" />
+    <Image Include="Images\stage4.png" />
     <Image Include="Images\startBtn.png" />
     <Image Include="Images\upBtn.png" />
   </ItemGroup>

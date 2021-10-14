@@ -32,17 +32,16 @@ private:
 	ObjectPtr moveBtn;
 	ObjectPtr changeMoveBtn;
 	// 화면, 블럭 및 캐릭터 
-	ScenePtr stages[3];
+	ScenePtr stages[4];
 	int stage; 
 	// stages 마다 하나씩 필요 -> stages 끝날때 블럭 새로 만들기. setBlock에서 stages 입력받아, 해당 스테이지에만 블럭생성 
 	ObjectPtr blocks[10][10];
 	// stages 마다의 block 위치
-	// 
 	//bool blockIsExist[10][10]; // Stages 마다 3개 씩 필요하다.. ->blocks만으로 확인할 방법 찾기 
 
 	// select 캐릭터 
 	enum characterSelection {DRAGON, BIRD, DOG};
-	char characterName[3][20] = {"Images/dragon%d.png", "Images/dragon%d.png", "Images/dragon%d.png"};
+	char charactersPath[3][20] = {"Images/dragon%d.png", "Images/dragon%d.png", "Images/dragon%d.png"};
 	int characterI;
 	int characterJ;
 	int characterS; //status
@@ -63,12 +62,6 @@ private:
 	//ObjectPtr characters[3][4]; // 좌서있기, 좌이동, 우서있기, 우이동
 	ObjectPtr mainCharacter; 
 
-	int MOVE_MAX;
-	int MOVE_MIN;
-
-
-
-
 
 public:
 	Stair();
@@ -80,12 +73,15 @@ public:
 	void setBlockPosition(); // 블록 좌표 초기화 
 	void setStagesKey();
 
-	void setCharacter(int stageNum, characterSelection name); 
+	void setCharacter(int stageNum, int characterName); 
 	
 	// making func
 	void makeBlocks(int stageNum); 
 	// moving func
-	void standToMove();
-	void moveToStand();
 
+	void moveToLeft(ScenePtr scene);
+	void moveBackLeft();
+	void moveToRight(ScenePtr scene);
+	void moveBackRight();
+	bool isOnBlock();
 };

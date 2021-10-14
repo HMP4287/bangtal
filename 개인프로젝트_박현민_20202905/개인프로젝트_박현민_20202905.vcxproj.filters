@@ -67,5 +67,8 @@
     <Image Include="Images\changeBtn.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Images\stage4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

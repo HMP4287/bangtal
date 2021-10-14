@@ -1,56 +1,46 @@
 #include "stair.h"
 
-// 생성자 구현 (최적화필요)
+// 생성자 구현
 Stair::Stair() {
 	srand((unsigned int)time(NULL));
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
 
+	// 코드 순서가 프로그렘에 지장이 없는 순
+
 	// stages 설정 
 	Stair::setStages();
-
-	// characters 설정 
-	
-
-
-	// Home 화면 설정 
-	Stair::setHome(); 
-
-	// startBtn 콜백 설정 
-	Stair::setStartBtn();
 
 	// Blocks 초기화  
 	Stair::setBlockPosition();
 
-	// stageNum에 따라서 화면 생성 
-	Stair::makeBlocks(0);
-	Stair::setCharacter(0, DRAGON); // 0stage에 캐릭터 생성 
+	// stageNum에 따라서 화면 생성
+	// startBtn 누르고나서 설정하고 표시해도 된다. 
+	// setStages()아래에만 있으면 된다.
+	Stair::makeBlocks(stage); // blocks 배열을 1개만 만들기 위해 스테이지 블럭을 각각생성 
 
+	// characters 설정 
+	Stair::setCharacter(stage, DRAGON); // 0stage에 캐릭터 생성 
 	// stages의 keyboard 콜백 설정 
+	// setCharacter 이후에 setStagesKey() 와야함 
 	Stair::setStagesKey();
+
+	// Home 화면 설정 
+	Stair::setHome(); 
+	// startBtn 콜백 설정 
+	Stair::setStartBtn();
+
 
 
 	
-	// blockIsExist 확인 
-	//for (int i = 0; i < 10; i++) {
-	//	for (int j = 0; j < 10; j++)
-	//	{
-
-	//		if (blocks[j][i])
-	//			printf("%04d ", blocks[j][i]->ID());
-	//		else
-	//			printf("NULL ", blocks[j][i]);
-	//	}
-	//	printf("\n");
-	//}
 	startGame(home);
 }
 
 void Stair::setStages() {
 	stage = 0;
 	// stages 설정 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		sprintf(path1, "stage%d", i + 1);
 		sprintf(path2, "Images/stage%d.png", i + 1);
 		stages[i] = Scene::create(path1, path2);
@@ -61,7 +51,11 @@ void Stair::setHome() {
 	home = Scene::create("home", "Images/stage1.png");
 	gameToy = Object::create("Images/gameToy.png", home, 256, 144);
 	// 현재선택된 캐릭터에 따라 달라져야함 
+	// 코드의 실행순서가 문제 
+
 	homeCharacter = Object::create("Images/dragon1.png", home, 576, 330);  
+	//mainCharacter = Object::create("Images/dragon1.png", home, 576, 330);  
+
 	//ObjectPtr checkChar = Object::create("Images/dragon3.png", home, 576 + 64, 330 + 31);
 	characterSelectBtn = Object::create("Images/characterSelectBtn.png", home, 512, 216);
 	startBtn = Object::create("Images/startBtn.png", home, 640, 216);
@@ -69,7 +63,7 @@ void Stair::setHome() {
 
 void Stair::setStartBtn() {
 	startBtn->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
-		stages[0]->enter();
+		stages[stage]->enter();
 		return true;
 	});
 }
@@ -84,112 +78,60 @@ void Stair::setBlockPosition() {
 
 void Stair::setStagesKey() {
 	// 방향키 설정 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 4; i++) {
 		stages[i]->setOnKeyboardCallback([&](ScenePtr scene, KeyCode key, bool pressed)->bool {
-			// dragon's height == i == 0층 == 최종층 도달했다면 다음 스테이지로 이동 
 			if (pressed) {
 				if (key == KeyCode::KEY_RIGHT_ARROW) {
-			     	//현재 어딜 바라보고 있는가 
 					if (characterS == LEFT_STAND) {
-						sprintf(path2, characterName[characterN], LEFT_MOVE + 1);
-						mainCharacter->setImage(path2);
-						// 바라보는 방향의 다음 블록으로 이동. 
-						mainCharacter->locate(scene, dj[--characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
-						characterS = LEFT_MOVE;
-
-						// 블럭위에 섰는지 확인 필요. 
-						if (blocks[characterI][characterJ]) {
-							// 최상위 블럭이라면 다음스테이지. 
-							if (characterI == 0) {
-								//validation check 필요 stage < 2
-								stages[++stage]->enter();
-							}
-						}
-						// 허공에 섰다면
-						else {
-							// 사망 모션 표현 후 게임 종료 점수판 화면으로 이동. -> 일단 endGame()으로 대체 
-							endGame();
-						}
-
+						Stair::moveToLeft(scene);
 					}
 					else if (characterS == RIGHT_STAND) {
-						sprintf(path2, characterName[characterN], RIGHT_MOVE + 1);
-						mainCharacter->setImage(path2);
-						mainCharacter->locate(scene, dj[++characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
-						characterS = RIGHT_MOVE;
-						// 블럭위에 섰는지 확인 필요. 
-						if (blocks[characterI][characterJ]) {
-							// 최상위 블럭이라면 다음스테이지. 
-							if (characterI == 0) {
-								//validation check 필요 stage < 2
-								stages[++stage]->enter();
-							}
-						}
-						// 허공에 섰다면
-						else {
-							// 사망 모션 표현 후 게임 종료 점수판 화면으로 이동. -> 일단 endGame()으로 대체 
-							endGame();
-						}
+						Stair::moveToRight(scene);
 					}
 				}
 				// 방향 전환 & 이동 
 				else if (key == KeyCode::KEY_LEFT_ARROW) {
-					// 왼쪽 바라보고 있다면, 오른쪽 변환, 오른쪽 이동, 복구 
 					if (characterS == LEFT_STAND) {
-						sprintf(path2, characterName[characterN], RIGHT_MOVE + 1);
-						mainCharacter->setImage(path2);
-						// 바라보는 방향의 다음 블록으로 이동. 
-						mainCharacter->locate(scene, dj[++characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
-						characterS = RIGHT_MOVE;
-						if (blocks[characterI][characterJ]) {
-							// 최상위 블럭이라면 다음스테이지. 
-							if (characterI == 0) {
-								//validation check 필요 stage < 2
-								stages[++stage]->enter();
-							}
-						}
-						// 허공에 섰다면
-						else {
-							// 사망 모션 표현 후 게임 종료 점수판 화면으로 이동. -> 일단 endGame()으로 대체 
-							endGame();
-						}
-
+						Stair::moveToRight(scene);
 					}
 					else if (characterS == RIGHT_STAND) {
-						sprintf(path2, characterName[characterN], LEFT_MOVE + 1);
-						mainCharacter->setImage(path2);
-						// 바라보는 방향의 다음 블록으로 이동. 
-						mainCharacter->locate(scene, dj[--characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
-						characterS = LEFT_MOVE;
+						Stair::moveToLeft(scene);
+					}
+				}
 
-						// 블럭위에 섰는지 확인 필요. 
-						if (blocks[characterI][characterJ]) {
-							// 최상위 블럭이라면 다음스테이지. 
-							if (characterI == 0) {
-								//validation check 필요 stage < 2
-								stages[++stage]->enter();
-							}
+				// Validation 
+				if (Stair::isOnBlock()) {
+					// 제일 위 블록에 도착 시 다음 스테이지로 이동. 
+					if (characterI == 0) {
+						if (stage < 3) {
+							++stage; 
+							Stair::makeBlocks(stage);
+							Stair::setCharacter(stage, characterN);
+							stages[stage]->enter();
 						}
-						// 허공에 섰다면
+						// 마지막스테이지라면, 마지막스테이지 반복. 
 						else {
-							// 사망 모션 표현 후 게임 종료 점수판 화면으로 이동. -> 일단 endGame()으로 대체 
-							endGame();
+							//stages[stage] = Scene::create("stage4", "Images/stage4.png");
+							//Stair::makeBlocks(stage);
+							//Stair::setCharacter(stage, characterN);
+							//stages[stage]->enter();
+						
 						}
 					}
 				}
+				else {
+					endGame();
+				}
 			}
+
 			// !pressed
 			else {
 				// 이동 모션 후 원상복구 
 				if (characterS == LEFT_MOVE) {
-					characterS = LEFT_STAND;
-					sprintf(path2, characterName[characterN], LEFT_STAND + 1);
-					mainCharacter->setImage(path2);
+					Stair::moveBackLeft();
 				}
 				else if (characterS == RIGHT_MOVE) {
-					characterS = RIGHT_STAND;
-					sprintf(path2, characterName[characterN], RIGHT_STAND + 1);
-					mainCharacter->setImage(path2);
+					Stair::moveBackRight();
 				}
 			}
 
@@ -197,6 +139,7 @@ void Stair::setStagesKey() {
 		});
 	}
 }
+
 
 void Stair::makeBlocks(int stageNum) {
 
@@ -208,12 +151,11 @@ void Stair::makeBlocks(int stageNum) {
 	}
 	// Block 생성 
 	int beforeJ = 5;
-	int beforeI = 9;
 	int curJ;
 	for (int curI = 8; curI >= 0; curI--) {
 		curJ = rand() % 2;
 		curJ = curJ == 0 ? -1 + beforeJ : 1 + beforeJ;
-		if (curJ < 8 && curJ > 1) {
+		if (curJ < 7 && curJ > 2) {  // 범위를 좁힐수록 다양한 패턴, 
 			blocks[curI][curJ] = Object::create("Images/block.png", stages[stageNum], dj[curJ], di[curI]);
 			beforeJ = curJ;
 		}
@@ -222,12 +164,43 @@ void Stair::makeBlocks(int stageNum) {
 	}
 }
 
-void Stair::setCharacter(int stageNum, characterSelection name) {
-	
+void Stair::setCharacter(int stageNum, int characterName) {
 	// 선택한 캐릭터, stage에서 첫 위치 설정 
-	sprintf(path2, characterName[name], LEFT_STAND + 1);
+	sprintf(path2, charactersPath[characterName], LEFT_STAND + 1);
+	//mainCharacter->locate(stages[stageNum], dj[5], di[9]);
 	mainCharacter = Object::create(path2, stages[stageNum], dj[5], di[9]);
 	characterI = 9;
 	characterJ = 5;
 	characterS = LEFT_STAND;
+	characterN = characterName;
+}
+
+void Stair::moveToLeft(ScenePtr scene) {
+	sprintf(path2, charactersPath[characterN], LEFT_MOVE + 1);
+	mainCharacter->setImage(path2);
+	mainCharacter->locate(scene, dj[--characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
+	characterS = LEFT_MOVE;
+}
+
+void Stair::moveToRight(ScenePtr scene) {
+	sprintf(path2, charactersPath[characterN], RIGHT_MOVE + 1);
+	mainCharacter->setImage(path2);
+	mainCharacter->locate(scene, dj[++characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
+	characterS = RIGHT_MOVE;
+}
+
+void Stair::moveBackLeft() {
+	characterS = LEFT_STAND;
+	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+	mainCharacter->setImage(path2);
+}
+
+void Stair::moveBackRight() {
+	characterS = RIGHT_STAND;
+	sprintf(path2, charactersPath[characterN], RIGHT_STAND + 1);
+	mainCharacter->setImage(path2);
+}
+
+bool Stair::isOnBlock() {
+	return (blocks[characterI][characterJ]!=NULL);
 }
