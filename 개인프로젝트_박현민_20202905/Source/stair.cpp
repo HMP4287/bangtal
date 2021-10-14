@@ -24,7 +24,7 @@ Stair::Stair() {
 	Stair::setCharacter(stage, DRAGON); // 0stage에 캐릭터 생성 
 	// stages의 keyboard 콜백 설정 
 	// setCharacter 이후에 setStagesKey() 와야함 
-	Stair::setStagesKey();
+	Stair::setStageKey(stage);
 
 	// Home 화면 설정 
 	Stair::setHome(); 
@@ -52,8 +52,8 @@ void Stair::setHome() {
 	gameToy = Object::create("Images/gameToy.png", home, 256, 144);
 	// 현재선택된 캐릭터에 따라 달라져야함 
 	// 코드의 실행순서가 문제 
-
-	homeCharacter = Object::create("Images/dragon1.png", home, 576, 330);  
+	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+	homeCharacter = Object::create(path2, home, 576, 330);  
 	//mainCharacter = Object::create("Images/dragon1.png", home, 576, 330);  
 
 	//ObjectPtr checkChar = Object::create("Images/dragon3.png", home, 576 + 64, 330 + 31);
@@ -76,68 +76,68 @@ void Stair::setBlockPosition() {
 	}
 }
 
-void Stair::setStagesKey() {
+void Stair::setStageKey(int stageNum) {
 	// 방향키 설정 
-	for (int i = 0; i < 4; i++) {
-		stages[i]->setOnKeyboardCallback([&](ScenePtr scene, KeyCode key, bool pressed)->bool {
-			if (pressed) {
-				if (key == KeyCode::KEY_RIGHT_ARROW) {
-					if (characterS == LEFT_STAND) {
-						Stair::moveToLeft(scene);
-					}
-					else if (characterS == RIGHT_STAND) {
-						Stair::moveToRight(scene);
-					}
+	stages[stageNum]->setOnKeyboardCallback([&](ScenePtr scene, KeyCode key, bool pressed)->bool {
+		if (pressed) {
+			if (key == KeyCode::KEY_RIGHT_ARROW) {
+				if (characterS == LEFT_STAND) {
+					Stair::moveToLeft(scene);
 				}
-				// 방향 전환 & 이동 
-				else if (key == KeyCode::KEY_LEFT_ARROW) {
-					if (characterS == LEFT_STAND) {
-						Stair::moveToRight(scene);
-					}
-					else if (characterS == RIGHT_STAND) {
-						Stair::moveToLeft(scene);
-					}
+				else if (characterS == RIGHT_STAND) {
+					Stair::moveToRight(scene);
 				}
-
-				// Validation 
-				if (Stair::isOnBlock()) {
-					// 제일 위 블록에 도착 시 다음 스테이지로 이동. 
-					if (characterI == 0) {
-						if (stage < 3) {
-							++stage; 
-							Stair::makeBlocks(stage);
-							Stair::setCharacter(stage, characterN);
-							stages[stage]->enter();
-						}
-						// 마지막스테이지라면, 마지막스테이지 반복. 
-						else {
-							//stages[stage] = Scene::create("stage4", "Images/stage4.png");
-							//Stair::makeBlocks(stage);
-							//Stair::setCharacter(stage, characterN);
-							//stages[stage]->enter();
-						
-						}
-					}
+			}
+			// 방향 전환 & 이동 
+			else if (key == KeyCode::KEY_LEFT_ARROW) {
+				if (characterS == LEFT_STAND) {
+					Stair::moveToRight(scene);
 				}
-				else {
-					endGame();
+				else if (characterS == RIGHT_STAND) {
+					Stair::moveToLeft(scene);
 				}
 			}
 
-			// !pressed
+			// Validation 
+			if (Stair::isOnBlock()) {
+				// 제일 위 블록에 도착 시 다음 스테이지로 이동. 
+				if (characterI == 0) {
+					if (stage < 3) {
+						++stage; 
+						Stair::setStageKey(stage);
+						Stair::makeBlocks(stage);
+						Stair::setCharacter(stage, characterN);
+						stages[stage]->enter();
+					}
+					// 마지막스테이지라면, 마지막스테이지 반복. 
+					else {
+						stages[stage] = Scene::create("stage4", "Images/stage4.png");
+						Stair::setStageKey(stage);
+						Stair::makeBlocks(stage);
+						Stair::setCharacter(stage, characterN);
+						stages[stage]->enter();
+					
+					}
+				}
+			}
 			else {
-				// 이동 모션 후 원상복구 
-				if (characterS == LEFT_MOVE) {
-					Stair::moveBackLeft();
-				}
-				else if (characterS == RIGHT_MOVE) {
-					Stair::moveBackRight();
-				}
+				endGame();
 			}
+		}
 
-			return true;
-		});
-	}
+		// !pressed
+		else {
+			// 이동 모션 후 원상복구 
+			if (characterS == LEFT_MOVE) {
+				Stair::moveBackLeft();
+			}
+			else if (characterS == RIGHT_MOVE) {
+				Stair::moveBackRight();
+			}
+		}
+
+		return true;
+	});
 }
 
 

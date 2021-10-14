@@ -71,7 +71,7 @@ public:
 	void setHome(); // 홈화면 캐릭터 입력값 
 	void setStartBtn(); // stage1 
 	void setBlockPosition(); // 블록 좌표 초기화 
-	void setStagesKey();
+	void setStageKey(int stageNum);
 
 	void setCharacter(int stageNum, int characterName); 
 	
