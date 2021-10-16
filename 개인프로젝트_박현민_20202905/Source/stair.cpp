@@ -11,7 +11,7 @@ Stair::Stair() {
 	Stair::setBlockPosition();
 
 	// 드래곤으로 캐릭터 초기화 
-	Stair::setCharacterNum(DRAGON); 
+	Stair::setCharacterNum(DRAGON);
 
 	// 최고기록 초기화 
 	Stair::setBestScore(0);
@@ -24,6 +24,7 @@ Stair::Stair() {
 
 	// 게임 start 설정  
 	Stair::setStartBtn();
+	Stair::setCharacterSelectBtn();
 	
 	startGame(home);
 }
@@ -334,4 +335,33 @@ void Stair::setGameOverScore() {
 	scoreNumbers[2] = Object::create(scoresPath[0], gameOver, 566 + 33 + 33, 328);
 	scoreNumbers[3] = Object::create(scoresPath[10], gameOver, 566 + 33 + 33 + 33, 328);
 	Stair::setScoreNumbers();
+}
+
+void Stair::setCharacterSelect() {
+	//characterSelect = Scene::create("charSelect", "Images/charSelect.png");
+	////gameToy = Object::create("Images/selection.png", characterSelect, 256, 144);
+
+
+	//for (int i = 0; i < 3; i++) {
+	//	sprintf(path1, "selectBtn%d", i + 1);
+	//	characterSelectBtns[i] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * i), 216);
+
+	//	characterSelectBtns[i]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
+	//		Stair::setCharacterNum(i);
+	//		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+	//		homeCharacter->setImage(path2);
+	//		//Stair::setHome();
+	//		//characterSelect->enter();
+	//		home->enter();
+	//		return true;
+	//	});
+	//}
+}
+
+void Stair::setCharacterSelectBtn() {
+	characterSelectBtn->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
+		Stair::setCharacterSelect(); 
+		characterSelect->enter();
+		return true;
+	});
 }

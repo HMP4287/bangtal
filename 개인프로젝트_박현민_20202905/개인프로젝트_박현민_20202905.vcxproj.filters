@@ -118,5 +118,41 @@
     <Image Include="Images\bestScore.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Images\hipo4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\hipo1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\hipo2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\hipo3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\dog1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\dog2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\dog3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\dog4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\selection.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\selectBtn.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\gameToy (1).png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\charSelect.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

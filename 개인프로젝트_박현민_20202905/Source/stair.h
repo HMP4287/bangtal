@@ -20,13 +20,14 @@ private:
 	// home 관련 (추후 stages, caracters배열에서 추출하도록 변경 고려)
 	ScenePtr home;
 	ScenePtr gameOver;
+	ScenePtr characterSelect;
+
+	ObjectPtr characterSelectBtn; // 캐릭터 선택 창으로 이동하는 버튼 
+	ObjectPtr characterSelectBtns[3]; // 캐릭터 선택하는 버튼 
 	ObjectPtr gameToy;
 	ObjectPtr homeCharacter;  // 배경화면 캐릭터 
-	ObjectPtr characterSelectBtn;
 	ObjectPtr startBtn;
 	ObjectPtr homeBtn;
-
-
 
 	// in Game 관련 
 	int bestScore;
@@ -42,14 +43,11 @@ private:
 	char stagesPath[4][20] = { "Images/stage1.png", "Images/stage2.png", "Images/stage3.png", "Images/stage4.png" };
 	char stagesName[4][10] = { "stage1", "stage2", "stage3", "stage4" };
 	int stage; 
-	// stages 마다 하나씩 필요 -> stages 끝날때 블럭 새로 만들기. setBlock에서 stages 입력받아, 해당 스테이지에만 블럭생성 
 	ObjectPtr blocks[10][10];
-	// stages 마다의 block 위치
-	//bool blockIsExist[10][10]; // Stages 마다 3개 씩 필요하다.. ->blocks만으로 확인할 방법 찾기 
 
 	// select 캐릭터 
-	enum characterSelection {DRAGON, BIRD, DOG};
-	char charactersPath[3][20] = {"Images/dragon%d.png", "Images/dragon%d.png", "Images/dragon%d.png"};
+	enum characterSelection {DRAGON, HIPO, DOG};
+	char charactersPath[3][20] = {"Images/dragon%d.png", "Images/hipo%d.png", "Images/dog%d.png"};
 	int characterI;
 	int characterJ;
 	int characterS; //status
@@ -60,17 +58,8 @@ private:
 	int di[10]; 
 	int dj[10];
 
-	// 캐릭터 좌표와 방향 
-	// 
-	// 
-	// 
-	//int characterPosition[3]; // x, y, enum direction (LEFT_STAND, RIGHT_STAND) 
-
 	// 화면, 블럭 및 캐릭터 
-
 	enum characterStatus {LEFT_STAND, RIGHT_STAND, LEFT_MOVE, RIGHT_MOVE};
-	//direction characterStatus;
-	//ObjectPtr characters[3][4]; // 좌서있기, 좌이동, 우서있기, 우이동
 	ObjectPtr mainCharacter; 
 
 	ObjectPtr scoreBoard;
@@ -89,6 +78,10 @@ public:
 
 	void setCharacter(); 
 	void setCharacterNum(int characterName);
+
+	void setCharacterSelect();
+	void setCharacterSelectBtn();
+
 
 	// score
 	void setScore();
