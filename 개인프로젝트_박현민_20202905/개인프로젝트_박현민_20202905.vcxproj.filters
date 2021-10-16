@@ -70,5 +70,53 @@
     <Image Include="Images\stage4.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Images\scoreBoard.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\back.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\9.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\0.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\5.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\6.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\7.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\8.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\+.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\gameOver.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\homeBtn.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Images\bestScore.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

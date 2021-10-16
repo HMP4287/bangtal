@@ -146,6 +146,19 @@
     <ClInclude Include="Source\stair.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Images\+.png" />
+    <Image Include="Images\0.png" />
+    <Image Include="Images\1.png" />
+    <Image Include="Images\2.png" />
+    <Image Include="Images\3.png" />
+    <Image Include="Images\4.png" />
+    <Image Include="Images\5.png" />
+    <Image Include="Images\6.png" />
+    <Image Include="Images\7.png" />
+    <Image Include="Images\8.png" />
+    <Image Include="Images\9.png" />
+    <Image Include="Images\back.png" />
+    <Image Include="Images\bestScore.png" />
     <Image Include="Images\block.png" />
     <Image Include="Images\changeBtn.png" />
     <Image Include="Images\characterSelectBtn.png" />
@@ -153,7 +166,10 @@
     <Image Include="Images\dragonFireRight.png" />
     <Image Include="Images\dragonMoveLeft.png" />
     <Image Include="Images\dragonMoveRight.png" />
+    <Image Include="Images\gameOver.png" />
     <Image Include="Images\gameToy.png" />
+    <Image Include="Images\homeBtn.png" />
+    <Image Include="Images\scoreBoard.png" />
     <Image Include="Images\stage1.png" />
     <Image Include="Images\stage2.png" />
     <Image Include="Images\stage3.png" />
