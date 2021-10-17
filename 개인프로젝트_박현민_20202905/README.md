@@ -45,3 +45,6 @@ by 박현민
 ![readme5](https://user-images.githubusercontent.com/68492498/137629958-b5643a99-28c5-4a07-b93a-8f4c1b7bed96.png)
 
 <h3> 혹 아직 이해가 안가신다면, 그냥 바로 한 두번 해보십시요!</h3>
+
+<hr/>
+<br/>
