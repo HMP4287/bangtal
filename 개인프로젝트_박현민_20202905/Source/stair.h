@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <windows.h>
+#include <time.h>
 
 using namespace bangtal;
 using std::string;
@@ -14,7 +15,7 @@ class Stair
 {
 private:
 	// 임시 변수 관련 
-	char path1[10];
+	char path1[20];
 	char path2[20];
 	
 	// home 관련 (추후 stages, caracters배열에서 추출하도록 변경 고려)
@@ -22,12 +23,20 @@ private:
 	ScenePtr gameOver;
 	ScenePtr characterSelect;
 
+	ScenePtr deadScene;
+
 	ObjectPtr characterSelectBtn; // 캐릭터 선택 창으로 이동하는 버튼 
 	ObjectPtr characterSelectBtns[3]; // 캐릭터 선택하는 버튼 
-	ObjectPtr gameToy;
+	ObjectPtr selectToy;
+
+	ObjectPtr gameToy; 
 	ObjectPtr homeCharacter;  // 배경화면 캐릭터 
 	ObjectPtr startBtn;
 	ObjectPtr homeBtn;
+	
+	ObjectPtr deadRing;
+
+	ObjectPtr deadCharacter;
 
 	// in Game 관련 
 	int bestScore;
@@ -64,6 +73,11 @@ private:
 
 	ObjectPtr scoreBoard;
 
+	ObjectPtr timerBoard; 
+	ObjectPtr timerBars[5];
+	bool timerIsOff[5];
+	TimerPtr timers[5];
+
 public:
 	Stair();
 
@@ -81,6 +95,7 @@ public:
 
 	void setCharacterSelect();
 	void setCharacterSelectBtn();
+	void setCharacterSelectBtns();
 
 
 	// score
@@ -91,6 +106,11 @@ public:
 	void setScoreNumbers();
 	bool isBestScore();
 
+	//timer
+	void setTimers();  // 초기화 
+	void setTimerBars(); 
+	void setTimerBoard();
+	//void reduceTimer(); // 줄어든 것 표시 
 
 
 	// making func
@@ -102,8 +122,12 @@ public:
 	void moveToRight(ScenePtr scene);
 	void moveBackRight();
 	bool isOnBlock();
-	void dyingAction(); // 좌우로 움직이며 죽는 모션 표현 
+	//void dyingMotion(); // 좌우로 움직이며 죽는 모션 표현 
 
 	void setGameOver();
 	void setGameOverScore();
+
+	//void setDeadRing();
+
+	void delay(clock_t n);
 };

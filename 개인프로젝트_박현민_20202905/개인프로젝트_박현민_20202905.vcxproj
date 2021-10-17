@@ -160,25 +160,34 @@
     <Image Include="Images\back.png" />
     <Image Include="Images\bestScore.png" />
     <Image Include="Images\block.png" />
+    <Image Include="Images\bluebar.png" />
     <Image Include="Images\changeBtn.png" />
     <Image Include="Images\characterSelectBtn.png" />
     <Image Include="Images\charSelect.png" />
+    <Image Include="Images\diyedRing.png" />
     <Image Include="Images\dog1.png" />
     <Image Include="Images\dog2.png" />
     <Image Include="Images\dog3.png" />
     <Image Include="Images\dog4.png" />
     <Image Include="Images\dragon1" />
+    <Image Include="Images\dragon1.png" />
+    <Image Include="Images\dragon2.png" />
+    <Image Include="Images\dragon3.png" />
+    <Image Include="Images\dragon4.png" />
     <Image Include="Images\dragonFireRight.png" />
     <Image Include="Images\dragonMoveLeft.png" />
     <Image Include="Images\dragonMoveRight.png" />
     <Image Include="Images\gameOver.png" />
     <Image Include="Images\gameToy (1).png" />
     <Image Include="Images\gameToy.png" />
+    <Image Include="Images\greenbar.png" />
     <Image Include="Images\hipo1.png" />
     <Image Include="Images\hipo2.png" />
     <Image Include="Images\hipo3.png" />
     <Image Include="Images\hipo4.png" />
     <Image Include="Images\homeBtn.png" />
+    <Image Include="Images\jubar.png" />
+    <Image Include="Images\redbar.png" />
     <Image Include="Images\scoreBoard.png" />
     <Image Include="Images\selectBtn.png" />
     <Image Include="Images\selection.png" />
@@ -187,7 +196,12 @@
     <Image Include="Images\stage3.png" />
     <Image Include="Images\stage4.png" />
     <Image Include="Images\startBtn.png" />
+    <Image Include="Images\timerBoard.png" />
     <Image Include="Images\upBtn.png" />
+    <Image Include="Images\yellbar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

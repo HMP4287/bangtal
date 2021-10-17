@@ -38,6 +38,11 @@ void Stair::setStage() {
 
 
 	Stair::setScoreBoard();
+
+	//Stair::setTimers();
+	//Stair::setTimerBars();
+	Stair::setTimerBoard();
+	
 	
 	
 	Stair::setStageKey();
@@ -51,6 +56,7 @@ void Stair::setHome() {
 	home = Scene::create("home", stagesPath[0]);
 	gameToy = Object::create("Images/gameToy.png", home, 256, 144);
 	// 현재선택된 캐릭터에 따라 달라져야함 
+	
 	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
 	homeCharacter = Object::create(path2, home, 576, 330);  
 	//mainCharacter = Object::create(path2, home, 576, 330);  
@@ -66,11 +72,15 @@ void Stair::setStartBtn() {
 		Stair::setStageNum();
 		
 		// timer 초기화 
+		// 
 		// score 초기화 
 		Stair::setScore();
+		// timer 생성 및 초기화 
+		Stair::setTimers();
+
 		// stage 생성 
 		Stair::setStage();
-
+			
 		stages[stage]->enter();
 		return true;
 	});
@@ -119,12 +129,7 @@ void Stair::setStageKey() {
 			// Validation 
 			if (Stair::isOnBlock()) {
 				// 제일 위 블록에 도착 시 다음 스테이지로 이동. 
-				// score 올리고 보여주기 
-
 				Stair::addScore();
-
-
-
 				if (characterI == 0) {
 					if (stage < 3) {
 						++stage;
@@ -139,14 +144,10 @@ void Stair::setStageKey() {
 				}
 			}
 			else {
-				//dyingAction();
-				//if (Stair::isBestScore())
-				//	Stair::setBestScore(score);
-				//
+				if (Stair::isBestScore())
+					Stair::setBestScore(score);
 				Stair::setGameOver();
 				gameOver->enter();
-
-				//endGame();
 			}
 		}
 
@@ -180,9 +181,13 @@ void Stair::makeBlocks() {
 
 void Stair::setCharacter() {
 	// 선택한 캐릭터, stage에서 첫 위치 설정 
-	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+	//char path2[20];
+	
+	sprintf(path1, charactersPath[characterN], LEFT_STAND + 1);
 	//mainCharacter->locate(stages[stageNum], dj[5], di[9]);
-	mainCharacter = Object::create(path2, stages[stage], dj[5], di[9]);
+	//printf("%s \n", path2);
+	
+	mainCharacter = Object::create(path1, stages[stage], dj[5], di[9]);
 	//mainCharacter->locate(stages[stage], dj[5], di[9]);
 	characterI = 9;
 	characterJ = 5;
@@ -223,15 +228,8 @@ bool Stair::isOnBlock() {
 	return (blocks[characterI][characterJ]!=NULL);
 }
 
-void Stair::dyingAction() {
-	ScenePtr dyingScene = Scene::create(stagesName[stage], stagesPath[stage]);
-	mainCharacter->locate(dyingScene, dj[characterJ], di[characterI]);
-	dyingScene->enter(); 
-	for (int i = 0; i < 10; i++) {
-		printf("DYINGING~~~");
-		Sleep(1000);
-	}
-}
+//void Stair::dyingMotion() {
+//}
 
 void Stair::setScore() {
 	score = 0;
@@ -306,6 +304,13 @@ void Stair::setGameOver() {
 	gameOver = Scene::create("gameOver", stagesPath[0]);
 	gameToy = Object::create("Images/gameOver.png", gameOver, 256, 72);
 	homeBtn = Object::create("Images/homeBtn.png", gameOver, 512, 186);
+
+	for (int i = 0; i < 5; i++)
+		timers[i]->stop();
+	homeCharacter->locate(gameOver, dj[characterJ], di[9]);
+	deadRing = Object::create("Images/diyedRing.png", gameOver, dj[characterJ], di[8]);
+
+
 	if (Stair::isBestScore()) {
 		scoreBoard = Object::create("Images/bestScore.png", gameOver, 556, 400);
 		Stair::setGameOverScore();
@@ -323,6 +328,8 @@ void Stair::setGameOver() {
 void Stair::setHomeBtn() {
 	homeBtn->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
 		startBtn->locate(home, 640, 216);
+		homeCharacter->locate(home, 576, 330);
+		deadRing->hide();
 		home->enter();
 		return true;
 	});
@@ -338,24 +345,10 @@ void Stair::setGameOverScore() {
 }
 
 void Stair::setCharacterSelect() {
-	//characterSelect = Scene::create("charSelect", "Images/charSelect.png");
-	////gameToy = Object::create("Images/selection.png", characterSelect, 256, 144);
-
-
-	//for (int i = 0; i < 3; i++) {
-	//	sprintf(path1, "selectBtn%d", i + 1);
-	//	characterSelectBtns[i] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * i), 216);
-
-	//	characterSelectBtns[i]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
-	//		Stair::setCharacterNum(i);
-	//		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-	//		homeCharacter->setImage(path2);
-	//		//Stair::setHome();
-	//		//characterSelect->enter();
-	//		home->enter();
-	//		return true;
-	//	});
-	//}
+	characterSelect = Scene::create("charSelect", stagesPath[3]);
+	selectToy = Object::create("Images/charSelect.png", characterSelect, 256, 144);
+	// 반복문으로 코드 작성할 시 오류남. => ???
+	Stair::setCharacterSelectBtns();
 }
 
 void Stair::setCharacterSelectBtn() {
@@ -364,4 +357,173 @@ void Stair::setCharacterSelectBtn() {
 		characterSelect->enter();
 		return true;
 	});
+}
+
+void Stair::setCharacterSelectBtns() {
+	characterSelectBtns[DRAGON] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * 0), 216);
+
+	characterSelectBtns[DRAGON]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
+		Stair::setCharacterNum(DRAGON);
+		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path2);
+		home->enter();
+		return true;
+	});
+	characterSelectBtns[HIPO] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * 1), 216);
+	characterSelectBtns[HIPO]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
+		Stair::setCharacterNum(HIPO);
+		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path2);
+		home->enter();
+		return true;
+	});
+	characterSelectBtns[DOG] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * 2), 216);
+	characterSelectBtns[DOG]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
+		Stair::setCharacterNum(DOG);
+		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path2);
+		home->enter();
+		return true;
+	});
+}
+
+//void Stair::setDeadRing() {
+//void Stair::setDeadRing() {
+//void Stair::setDeadRing() {
+	//deadRing = Object::create("Images/diyedRing.png", stages[stage], dj[characterJ], di[characterI]);
+//}
+
+void Stair::delay(clock_t n)
+
+{
+
+	clock_t start = clock();
+
+	while (clock() - start < n);
+
+}
+
+void Stair::setTimers() {
+	//timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
+	//timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
+	//timerBars[1] = Object::create("Images/jubar.png", stages[stage], dj[7] + 72 + 47, di[2] + 24);
+	//timerBars[2] = Object::create("Images/yellbar.png", stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
+	//timerBars[3] = Object::create("Images/greenbar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
+	//timerBars[4] = Object::create("Images/bluebar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);
+	for (int i = 0; i < 5; i++) {
+		timerIsOff[i] = false;
+		//timerBars[i]->show();
+		timerBars[i] = NULL;
+		timers[i] = NULL;
+	}
+
+	timers[0] = Timer::create(10.f);
+	timers[0]->setOnTimerCallback([&](TimerPtr)->bool {
+		timerBars[0]->hide();
+		timerIsOff[0] = true;
+		if (Stair::isBestScore())
+			Stair::setBestScore(score);
+		Stair::setGameOver();
+		gameOver->enter();
+		return true;
+	});
+	timers[1] = Timer::create(8.f);
+	timers[1]->setOnTimerCallback([&](TimerPtr)->bool {
+		timerBars[1]->hide();
+		timerIsOff[1] = true;
+		return true;
+	});
+	timers[2] = Timer::create(6.f);
+	timers[2]->setOnTimerCallback([&](TimerPtr)->bool {
+		timerBars[2]->hide();
+		timerIsOff[2] = true;
+		return true;
+	});
+	timers[3] = Timer::create(4.f);
+	timers[3]->setOnTimerCallback([&](TimerPtr)->bool {
+		timerBars[3]->hide();
+		timerIsOff[3] = true;
+		return true;
+	});
+	timers[4] = Timer::create(2.f);
+	timers[4]->setOnTimerCallback([&](TimerPtr)->bool {
+		timerBars[4]->hide();
+		timerIsOff[4] = true;
+		return true;
+	});
+
+	timers[4]->start();
+	timers[3]->start();
+	timers[2]->start();
+	timers[1]->start();
+	timers[0]->start();
+}
+
+void Stair::setTimerBars() {
+	//timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
+	//timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
+	//timerBars[1] = Object::create("Images/jubar.png", stages[stage], dj[7] + 72 + 47, di[2] + 24);
+	//timerBars[2] = Object::create("Images/yellbar.png", stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
+	//timerBars[3] = Object::create("Images/greenbar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
+	//timerBars[4] = Object::create("Images/bluebar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);
+	//timers[0]->create(60.f);
+	//timers[0]->setOnTimerCallback([&](TimerPtr)->bool {
+	//	timerBars[0]->hide();
+	//	if (Stair::isBestScore())
+	//		Stair::setBestScore(score);
+	//	Stair::setGameOver();
+	//	gameOver->enter();
+	//	return true;
+	//});
+	//timers[1]->create(48.f);
+	//timers[1]->setOnTimerCallback([&](TimerPtr)->bool {
+	//	timerBars[1]->hide();
+	//	return true;
+	//});
+	//timers[2]->create(36.f);
+	//timers[2]->setOnTimerCallback([&](TimerPtr)->bool {
+	//	timerBars[2]->hide();
+	//	return true;
+	//});
+	//timers[3]->create(24.f);
+	//timers[3]->setOnTimerCallback([&](TimerPtr)->bool {
+	//	timerBars[3]->hide();
+	//	return true;
+	//});
+	//timers[4]->create(12.f);
+	//timers[4]->setOnTimerCallback([&](TimerPtr)->bool {
+	//	timerBars[4]->hide();
+	//	return true;
+	//});
+
+	//timers[4]->start();
+	//timers[3]->start();
+	//timers[2]->start();
+	//timers[1]->start();
+	//timers[0]->start();
+}
+
+void Stair::setTimerBoard() {
+	//timerBoard->locate()
+	/*timerBoard->locate(stages[stage], dj[7] + 64, di[2]);
+	timerBars[0]->locate(stages[stage], dj[7] + 72, di[2] + 24);
+	timerBars[1]->locate(stages[stage], dj[7] + 72 + 47, di[2] + 24);
+	timerBars[2]->locate(stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
+	timerBars[3]->locate(stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
+	timerBars[4]->locate(stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);*/
+	
+	timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
+	timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
+	timerBars[1] = Object::create("Images/jubar.png", stages[stage], dj[7] + 72 + 47, di[2] + 24);
+	timerBars[2] = Object::create("Images/yellbar.png", stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
+	timerBars[3] = Object::create("Images/greenbar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
+	timerBars[4] = Object::create("Images/bluebar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);
+
+	for (int i = 0; i < 5; i++) {
+		if (timerIsOff[i]) {
+			timerBars[i]->hide();
+		}
+	}
+
+	//Stair::setScoreNumbers();
 }
