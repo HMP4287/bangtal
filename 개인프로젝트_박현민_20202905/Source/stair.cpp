@@ -1,6 +1,5 @@
 #include "stair.h"
 
-// 생성자 구현
 Stair::Stair() {
 	srand((unsigned int)time(NULL));
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
@@ -19,9 +18,6 @@ Stair::Stair() {
 	// Home 화면 설정 
 	Stair::setHome(); 
 
-	
-
-
 	// 게임 start 설정  
 	Stair::setStartBtn();
 	Stair::setCharacterSelectBtn();
@@ -30,21 +26,11 @@ Stair::Stair() {
 }
 
 void Stair::setStage() {
-	
 	stages[stage] = Scene::create(stagesName[stage], stagesPath[stage]);
-	Stair::makeBlocks(); // blocks 배열을 1개만 만들기 위해 스테이지 블럭을 각각생성 
-	// 캐릭터 스테이지에 위치시키기 
-	Stair::setCharacter(); // 0stage에 캐릭터 생성 
-
-
+	Stair::makeBlocks();
+	Stair::setCharacter();
 	Stair::setScoreBoard();
-
-	//Stair::setTimers();
-	//Stair::setTimerBars();
 	Stair::setTimerBoard();
-	
-	
-	
 	Stair::setStageKey();
 }
 
@@ -55,13 +41,8 @@ void Stair::setStageNum() {
 void Stair::setHome() {
 	home = Scene::create("home", stagesPath[0]);
 	gameToy = Object::create("Images/gameToy.png", home, 256, 144);
-	// 현재선택된 캐릭터에 따라 달라져야함 
-	
-	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-	homeCharacter = Object::create(path2, home, 576, 330);  
-	//mainCharacter = Object::create(path2, home, 576, 330);  
-
-	//ObjectPtr checkChar = Object::create("Images/dragon3.png", home, 576 + 64, 330 + 31);
+	sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+	homeCharacter = Object::create(path, home, 576, 330);  
 	characterSelectBtn = Object::create("Images/characterSelectBtn.png", home, 512, 216);
 	startBtn = Object::create("Images/startBtn.png", home, 640, 216);
 }
@@ -70,14 +51,10 @@ void Stair::setStartBtn() {
 	startBtn->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
 		// stages 초기화 
 		Stair::setStageNum();
-		
-		// timer 초기화 
-		// 
 		// score 초기화 
 		Stair::setScore();
 		// timer 생성 및 초기화 
 		Stair::setTimers();
-
 		// stage 생성 
 		Stair::setStage();
 			
@@ -130,22 +107,21 @@ void Stair::setStageKey() {
 			if (Stair::isOnBlock()) {
 				// 제일 위 블록에 도착 시 다음 스테이지로 이동. 
 				Stair::addScore();
-				if (characterI == 0) {
-					if (stage < 3) {
-						++stage;
+				if (Stair::isOnTop()) {
+					// 마지막 스테이지라면 마지막스테이지 반복 
+					if (Stair::isFinalStage()) {
 						Stair::setStage();
 						stages[stage]->enter();
 					}
-					// 마지막스테이지라면, 마지막스테이지 반복. 
 					else {
+						++stage;
 						Stair::setStage();
 						stages[stage]->enter();
 					}
 				}
 			}
+			// !onBlock
 			else {
-				if (Stair::isBestScore())
-					Stair::setBestScore(score);
 				Stair::setGameOver();
 				gameOver->enter();
 			}
@@ -170,7 +146,7 @@ void Stair::makeBlocks() {
 	for (int curI = 8; curI >= 0; curI--) {
 		curJ = rand() % 2;
 		curJ = curJ == 0 ? -1 + beforeJ : 1 + beforeJ;
-		if (curJ < 7 && curJ > 2) {  // 범위를 좁힐수록 다양한 패턴, 
+		if (curJ < 7 && curJ > 2) {  // 범위를 좁힐수록 다양한 패턴 생성 
 			blocks[curI][curJ] = Object::create("Images/block.png", stages[stage], dj[curJ], di[curI]);
 			beforeJ = curJ;
 		}
@@ -180,15 +156,8 @@ void Stair::makeBlocks() {
 }
 
 void Stair::setCharacter() {
-	// 선택한 캐릭터, stage에서 첫 위치 설정 
-	//char path2[20];
-	
-	sprintf(path1, charactersPath[characterN], LEFT_STAND + 1);
-	//mainCharacter->locate(stages[stageNum], dj[5], di[9]);
-	//printf("%s \n", path2);
-	
-	mainCharacter = Object::create(path1, stages[stage], dj[5], di[9]);
-	//mainCharacter->locate(stages[stage], dj[5], di[9]);
+	sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+	mainCharacter = Object::create(path, stages[stage], dj[5], di[9]);
 	characterI = 9;
 	characterJ = 5;
 	characterS = LEFT_STAND;
@@ -199,37 +168,34 @@ void Stair::setCharacterNum(int characterName) {
 }
 
 void Stair::moveToLeft(ScenePtr scene) {
-	sprintf(path2, charactersPath[characterN], LEFT_MOVE + 1);
-	mainCharacter->setImage(path2);
-	mainCharacter->locate(scene, dj[--characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
+	sprintf(path, charactersPath[characterN], LEFT_MOVE + 1);
+	mainCharacter->setImage(path);
+	mainCharacter->locate(scene, dj[--characterJ], di[--characterI] + 22); 
 	characterS = LEFT_MOVE;
 }
 
 void Stair::moveToRight(ScenePtr scene) {
-	sprintf(path2, charactersPath[characterN], RIGHT_MOVE + 1);
-	mainCharacter->setImage(path2);
-	mainCharacter->locate(scene, dj[++characterJ], di[--characterI] + 22); // 바닥 높이 22 고려해서 옴기기
+	sprintf(path, charactersPath[characterN], RIGHT_MOVE + 1);
+	mainCharacter->setImage(path);
+	mainCharacter->locate(scene, dj[++characterJ], di[--characterI] + 22); 
 	characterS = RIGHT_MOVE;
 }
 
 void Stair::moveBackLeft() {
 	characterS = LEFT_STAND;
-	sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-	mainCharacter->setImage(path2);
+	sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+	mainCharacter->setImage(path);
 }
 
 void Stair::moveBackRight() {
 	characterS = RIGHT_STAND;
-	sprintf(path2, charactersPath[characterN], RIGHT_STAND + 1);
-	mainCharacter->setImage(path2);
+	sprintf(path, charactersPath[characterN], RIGHT_STAND + 1);
+	mainCharacter->setImage(path);
 }
 
 bool Stair::isOnBlock() {
 	return (blocks[characterI][characterJ]!=NULL);
 }
-
-//void Stair::dyingMotion() {
-//}
 
 void Stair::setScore() {
 	score = 0;
@@ -252,8 +218,6 @@ void Stair::addScore() {
 }
 
 void Stair::setScoreNumbers() {
-	// 숫자 패드 다시 만들어서 보여줘야 함. 
-// 한 자릿수라면 중간좌표(dj[0] + 64 + 33)에 숫자표시할거
 	if (score < 10) {
 		scoreNumbers[0]->hide();
 		scoreNumbers[1]->hide();
@@ -261,7 +225,6 @@ void Stair::setScoreNumbers() {
 		scoreNumbers[2]->show();
 		scoreNumbers[3]->hide();
 	}
-	// 두 자리 중간좌표 + 세번쨰좌표 
 	else if (score < 100) {
 		string numStr = std::to_string(score);
 
@@ -307,6 +270,7 @@ void Stair::setGameOver() {
 
 	for (int i = 0; i < 5; i++)
 		timers[i]->stop();
+
 	homeCharacter->locate(gameOver, dj[characterJ], di[9]);
 	deadRing = Object::create("Images/diyedRing.png", gameOver, dj[characterJ], di[8]);
 
@@ -347,7 +311,6 @@ void Stair::setGameOverScore() {
 void Stair::setCharacterSelect() {
 	characterSelect = Scene::create("charSelect", stagesPath[3]);
 	selectToy = Object::create("Images/charSelect.png", characterSelect, 256, 144);
-	// 반복문으로 코드 작성할 시 오류남. => ???
 	Stair::setCharacterSelectBtns();
 }
 
@@ -364,88 +327,64 @@ void Stair::setCharacterSelectBtns() {
 
 	characterSelectBtns[DRAGON]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
 		Stair::setCharacterNum(DRAGON);
-		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-		homeCharacter->setImage(path2);
+		sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path);
 		home->enter();
 		return true;
 	});
 	characterSelectBtns[HIPO] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * 1), 216);
 	characterSelectBtns[HIPO]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
 		Stair::setCharacterNum(HIPO);
-		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-		homeCharacter->setImage(path2);
+		sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path);
 		home->enter();
 		return true;
 	});
 	characterSelectBtns[DOG] = Object::create("Images/selectBtn.png", characterSelect, 256 + 200 + (128 * 2), 216);
 	characterSelectBtns[DOG]->setOnMouseCallback([&](auto, auto, auto, auto)->bool {
 		Stair::setCharacterNum(DOG);
-		sprintf(path2, charactersPath[characterN], LEFT_STAND + 1);
-		homeCharacter->setImage(path2);
+		sprintf(path, charactersPath[characterN], LEFT_STAND + 1);
+		homeCharacter->setImage(path);
 		home->enter();
 		return true;
 	});
 }
 
-//void Stair::setDeadRing() {
-//void Stair::setDeadRing() {
-//void Stair::setDeadRing() {
-	//deadRing = Object::create("Images/diyedRing.png", stages[stage], dj[characterJ], di[characterI]);
-//}
-
-void Stair::delay(clock_t n)
-
-{
-
-	clock_t start = clock();
-
-	while (clock() - start < n);
-
-}
 
 void Stair::setTimers() {
-	//timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
-	//timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
-	//timerBars[1] = Object::create("Images/jubar.png", stages[stage], dj[7] + 72 + 47, di[2] + 24);
-	//timerBars[2] = Object::create("Images/yellbar.png", stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
-	//timerBars[3] = Object::create("Images/greenbar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
-	//timerBars[4] = Object::create("Images/bluebar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);
 	for (int i = 0; i < 5; i++) {
 		timerIsOff[i] = false;
-		//timerBars[i]->show();
 		timerBars[i] = NULL;
 		timers[i] = NULL;
 	}
 
-	timers[0] = Timer::create(10.f);
+	timers[0] = Timer::create(30.f);
 	timers[0]->setOnTimerCallback([&](TimerPtr)->bool {
 		timerBars[0]->hide();
 		timerIsOff[0] = true;
-		if (Stair::isBestScore())
-			Stair::setBestScore(score);
 		Stair::setGameOver();
 		gameOver->enter();
 		return true;
 	});
-	timers[1] = Timer::create(8.f);
+	timers[1] = Timer::create(24.f);
 	timers[1]->setOnTimerCallback([&](TimerPtr)->bool {
 		timerBars[1]->hide();
 		timerIsOff[1] = true;
 		return true;
 	});
-	timers[2] = Timer::create(6.f);
+	timers[2] = Timer::create(18.f);
 	timers[2]->setOnTimerCallback([&](TimerPtr)->bool {
 		timerBars[2]->hide();
 		timerIsOff[2] = true;
 		return true;
 	});
-	timers[3] = Timer::create(4.f);
+	timers[3] = Timer::create(12.f);
 	timers[3]->setOnTimerCallback([&](TimerPtr)->bool {
 		timerBars[3]->hide();
 		timerIsOff[3] = true;
 		return true;
 	});
-	timers[4] = Timer::create(2.f);
+	timers[4] = Timer::create(6.f);
 	timers[4]->setOnTimerCallback([&](TimerPtr)->bool {
 		timerBars[4]->hide();
 		timerIsOff[4] = true;
@@ -459,58 +398,7 @@ void Stair::setTimers() {
 	timers[0]->start();
 }
 
-void Stair::setTimerBars() {
-	//timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
-	//timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
-	//timerBars[1] = Object::create("Images/jubar.png", stages[stage], dj[7] + 72 + 47, di[2] + 24);
-	//timerBars[2] = Object::create("Images/yellbar.png", stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
-	//timerBars[3] = Object::create("Images/greenbar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
-	//timerBars[4] = Object::create("Images/bluebar.png", stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);
-	//timers[0]->create(60.f);
-	//timers[0]->setOnTimerCallback([&](TimerPtr)->bool {
-	//	timerBars[0]->hide();
-	//	if (Stair::isBestScore())
-	//		Stair::setBestScore(score);
-	//	Stair::setGameOver();
-	//	gameOver->enter();
-	//	return true;
-	//});
-	//timers[1]->create(48.f);
-	//timers[1]->setOnTimerCallback([&](TimerPtr)->bool {
-	//	timerBars[1]->hide();
-	//	return true;
-	//});
-	//timers[2]->create(36.f);
-	//timers[2]->setOnTimerCallback([&](TimerPtr)->bool {
-	//	timerBars[2]->hide();
-	//	return true;
-	//});
-	//timers[3]->create(24.f);
-	//timers[3]->setOnTimerCallback([&](TimerPtr)->bool {
-	//	timerBars[3]->hide();
-	//	return true;
-	//});
-	//timers[4]->create(12.f);
-	//timers[4]->setOnTimerCallback([&](TimerPtr)->bool {
-	//	timerBars[4]->hide();
-	//	return true;
-	//});
-
-	//timers[4]->start();
-	//timers[3]->start();
-	//timers[2]->start();
-	//timers[1]->start();
-	//timers[0]->start();
-}
-
 void Stair::setTimerBoard() {
-	//timerBoard->locate()
-	/*timerBoard->locate(stages[stage], dj[7] + 64, di[2]);
-	timerBars[0]->locate(stages[stage], dj[7] + 72, di[2] + 24);
-	timerBars[1]->locate(stages[stage], dj[7] + 72 + 47, di[2] + 24);
-	timerBars[2]->locate(stages[stage], dj[7] + 72 + 47 + 47, di[2] + 24);
-	timerBars[3]->locate(stages[stage], dj[7] + 72 + 47 + 47 + 47, di[2] + 24);
-	timerBars[4]->locate(stages[stage], dj[7] + 72 + 47 + 47 + 47 + 47, di[2] + 24);*/
 	
 	timerBoard = Object::create("Images/timerBoard.png", stages[stage], dj[7] + 64, di[2]);
 	timerBars[0] = Object::create("Images/redbar.png", stages[stage], dj[7] + 72, di[2] + 24);
@@ -524,6 +412,12 @@ void Stair::setTimerBoard() {
 			timerBars[i]->hide();
 		}
 	}
+}
 
-	//Stair::setScoreNumbers();
+bool Stair::isOnTop() {
+	return (characterI == 0);
+}
+
+bool Stair::isFinalStage() {
+	return (stage >= 3);
 }
